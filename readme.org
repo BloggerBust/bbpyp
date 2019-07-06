@@ -1,0 +1,260 @@
+# Trying to remember how to add source blocks in org. Can't remember what they are called.
+
+#+begin_src plantuml
+  @startuml
+
+  BusParticipant <|-- AbstractPublisher
+  BusParticipant <|-- AbstractSubscriber
+  AbstractPublisher <|-- AbstractPubSubClient
+  AbstractSubscriber <|-- AbstractPubSubClient
+
+  class BusParticipant {
+    + String participant_id
+    + String topic
+    # Object _disconnect_event
+    # Object _connect_event
+    # Object _logger
+    # Object _context_service
+  }
+
+  class AbstractPublisher {
+    + async void connect_publisher(Object send_channel)
+    + async void publish_message(String message)
+    + {abstract} async void _begin_publication()
+  }
+
+  class AbstractSubscriber {
+    + async void connect_subscriber(Object receive_channel, Object publisher_connect_event, Object publisher_disconnect_event)
+    - {abstract} async void _process_subscription_message(String topic, String message)
+  }
+
+  class AbstractPubSubClient {
+    + void publish_message_to_queue(String topic, String Message)
+    + void open_message_queue(String topic, String message)
+  }
+  @enduml
+
+  @startuml
+  AbstractStateMachine <|-- LexicalStateMachine
+  AbstractStateMachine <|-- InterpreterStateMachine
+  AbstractLexicalActions <|-- LexicalActions
+  AbstractPublisher <|-- LexicalActions
+  AbstractInterpreterActions <|-- InterpreterActions
+  AbstractPublisher <|-- InterpreterActions
+  AbstractSubscriber <|-- StateMachineStimuli
+  AbstractPubSubClient <|-- TripLog
+
+  class AbstractStateMachine {
+    + void next_state(Object stimuli)
+    # _on_enter(Object previous_state, action, message)
+    # _on_transition_fail(Object goal_state, message, error)
+    # _get_trigger_state(Object stimuli)
+
+    + Object current_state
+    # [] _transitions
+    - String _context_id
+  }
+
+  class LexicalStateMachine{
+    - _on_enter(Object previous_state, action, message)
+    - _on_transition_fail(Object goal_state, message, error)
+    - _get_trigger_state(Object stimuli)
+
+    - AbstractLexicalActions actions
+  }
+
+  class InterpreterStateMachine{
+    - _on_enter(Object previous_state, action, message)
+    - _on_transition_fail(Object goal_state, message, error)
+    - _get_trigger_state(Object stimuli)
+
+    - AbstractInterpreterActions actions
+  }
+
+  class AbstractLexicalActions {
+    # [] tokenize(String expression)
+    # void dispatch(Object message)
+  }
+
+  class AbstractInterpreterActions {
+    # bbp.ll_combinator.model.result.Result parse(tokens)
+    # dict evaluate(bbp.tag_script.parser.artifact.Artifact parser, dict frame)
+    # void dispatch(Object message)
+  }
+
+
+
+  class StateMachineStimuli {
+    + void begin_publishing_actions_for_topic(PipeLineBuilder pipe_line_builder)
+    - void _process_subscription_message(Object stimuli)
+    - void _subscription_to_topic_has_ended(String topic)
+
+    - AbstractStateMachine _state_machine
+  }
+
+  class TripLog {
+    + void set_message_bus(PubSub pub_sub)
+    + void set_pipe_line_builder(PipeLineBuilder pipe_line_builder)
+    + void set_tag_stream_file(String tag_stream_file)
+    + void register_state_machines()
+
+    + async void start_message_bus()
+    + async void _begin_publication(String topic)
+    + async void _process_subscription_message(Message message)
+  }
+
+  note "dispatch is our link method between two contexts topics" as DN
+    DN .. AbstractLexicalActions
+    AbstractInterpreterActions .. DN
+
+
+    @enduml
+
+#+end_src
+
+#+begin_src plantuml
+  @startuml
+  User --> TripLog : register_state_machines
+  TripLog --> PubSub : register lexical topic publisher and subscriber
+  TripLog --> PubSub : register parse topic publisher and subscriber
+  TripLog --> PubSub : register evaluate topic publisher and subscriber
+
+  User --> TripLog : start_message_bus
+  TripLog --> MessageBus : async start
+
+  MessageBus --> TripLog : _begin_publication
+  MessageBus --> LexicalSubscriber : _process_subscription_message
+  MessageBus --> LexicalActions : _begin_publication
+  MessageBus --> InterpreterSubscriber : _process_subscription_message
+  MessageBus --> InterpreterActions : _begin_publication
+
+  group Message Bus Topic Lexical
+    loop for each line in tag stream
+      TripLog --> MessageFactory : create message from line
+      TripLog --> LexicalSubscriber : message sent by lexical publisher
+    end
+
+  
+    loop for each message received from lexical publisher
+      LexicalSubscriber --> LexicalStateMachine : advance to next_state given message as stimuli
+    end
+
+    group bus link Lexical --> Parse
+      loop for each message dispatched by LexicalStateMachine Actions
+        LexicalActions --> InterpreterSubscriber : message sent by lexical actions publisher
+      end
+      group Message Bus Topic Parse
+        loop for each message received from LexicalStateMachine Actions Publisher
+          InterpreterSubscriber --> InterpreterStateMachine : advance to next_state given message as stimuli
+        end
+      end
+
+      group bus link Parse --> Evaluate
+        loop for each message dispatched by InterpreterStateMachine Actions
+          InterpreterActions --> InterpreterSubscriber : message sent by interpreter actions publisher        
+        end
+
+      
+        group Message Bus Topic Evaluate
+          loop for each message received from InterpreterStateMachine Actions Publisher
+            InterpreterSubscriber --> InterpreterStateMachine : advance to next_state given message as stimuli
+          end
+          group bus link Evaluate -> Report
+          loop for each message received from interpreter publisher
+            InterpreterActions --> TripLogSubscriber : message sent by interpreter state machine actions      
+            end
+          end
+        end
+      end
+    end
+  end
+
+  MessageBus --> TripLog : _begin_publication
+  TripLog --> LexicalStatemachineStimuliObj : 
+  @enduml
+#+end_src
+
+The goal here is to refactor actions and stimuli into a single pubsub client thingy that ecapsulates a statemachine so that it does not know anything about async or trio. The designs below represent our goal.
+
+Our new class diagrams...
+#+begin_src plantuml
+
+  @startuml
+  AbstractPubSubClient <|-- LexicalPubSubClient
+  AbstractPubSubClient <|-- InterpreterPubSubClient
+  AbstractPubSubClient <|-- ReportPubSubClient
+
+  TagScriptPubSubClient {
+    + async def _begin_publication()
+  }
+  note right : should keep state machines in context service variable
+  note right: tagscript engine should inject a statemachine that already has the TagScrptPubSubClient fully registered and ready to go.
+  note right: client should be able to add additional topics somehow and do what they like, but the behavior of the TagScriptPubSubClient should be encapsulated.
+  note left :responsible for reading from tagstream and publishing to lexical topic
+  note left :responsible for publishing from lexical to Parse topic
+  note left :responsible for parsing tokens and publising to EVALUATE topic
+  note left :responsible for publising from EVALUATE to REPORT topic. Should only send final result over report topic. Should the client implement the report 
+
+  class ReportPubSubClient {
+
+  }
+
+  note left: the consuming app is responsible for creating the final report and any other client topics / reports. Not sure about this. This is the grey rea. I don not want this to become too complicated.
+
+
+
+  @enduml
+
+
+#+end_src
+
+A sequence diagram following the path of a single message. No fricken loops!
+#+begin_src plantuml
+  @startuml
+
+  @enduml
+#+end_src
+
+* Options for reporting
+1. Keep result in interpreter and let the consumer retreive it directly
+2. send result back through result topic to the pubsub client. Have the consumer retrieve the result directly from the pub sub client.
+3. Have the consumer inhert from abstract subscriber and subscribe to result topic. Send results directly back to consumer.
+|    | <50>                                                        |                                                                      |                                                                                    |
+| #. | Description                                                 | Pro                                                                  | Con                                                                                |
+|----+-------------------------------------------------------------+----------------------------------------------------------------------+------------------------------------------------------------------------------------|
+| 1. | Keep result in interpreter and let the consumer             | Fast and simple solution                                             | - No concurrency on consumer side                                                  |
+|    | retreive it directly                                        |                                                                      | - interpreter state machine must be treated differently                            |
+|    |                                                             |                                                                      | - Diverges from established patterns                                               |
+|----+-------------------------------------------------------------+----------------------------------------------------------------------+------------------------------------------------------------------------------------|
+| 2. | publish each interpreted result on result                   | - uses established patterns                                          | - No concurrency on consumer side                                                  |
+|    | topic sending results back to pubsub client                 | - extensible by subscription                                         | - still need a way to get result back to consumer                                  |
+|    |                                                             |                                                                      | - adds n-1 useless messages since the client is not concurrent                     |
+|----+-------------------------------------------------------------+----------------------------------------------------------------------+------------------------------------------------------------------------------------|
+| 3. | publish each interpreted result directly to the consumer    | - the pubsub client does not need to be treated speicial for results | - client will need to use trio direclty                                            |
+|    |                                                             | - consumer side concurrency                                          | - client coupling with bpp interfaces will be increased                            |
+|    |                                                             | - consumer can take advatnage of intermediary result messages        | - if client only needs final result they will be spammed with n-w useless messages |
+|----+-------------------------------------------------------------+----------------------------------------------------------------------+------------------------------------------------------------------------------------|
+| 4. | publish only  final result when the state machien stops     | - the consumer will not recieve n-1 useless messages if all they     | - long running streams mean that any result at all will taka long time to reach    |
+|    |                                                             | want is the final result                                             | the consumer                                                                       |
+|    |                                                             |                                                                      | - can't be used in endless streams                                                 |
+|    |                                                             |                                                                      | - interpreter state machine would require a stop state                             |
+|    |                                                             |                                                                      | - stop state would need to be garaunteed to happen                                 |
+|----+-------------------------------------------------------------+----------------------------------------------------------------------+------------------------------------------------------------------------------------|
+| 5. | pub sub client sets result after each subscriber            | - fast and simple solution                                           | - No concurrency on consumer side                                                  |
+|    |                                                             | - does not impact state machines                                     | - long running streams mean result will take a long time to reach consumer         |
+|    |                                                             | - the cons about long running streams could be worked around if      | - can't be used in endless streams                                                 |
+|    |                                                             | the consumer extended the pub sub client, or became a subsciber      |                                                                                    |
+|    |                                                             | - can implement options 3 and 6 in the future                        |                                                                                    |
+|----+-------------------------------------------------------------+----------------------------------------------------------------------+------------------------------------------------------------------------------------|
+| 6. | Create a reserved result tag in the tagscript language      | - result can be placed as the final tag                              | - The result tag will need to be reserved thus for the fist time                   |
+|    | and publish a result whenever the result tag is interpreted | in the input stream if only the final result is desired              | there will be a reserved tag which means the client will not be able to use that   |
+|    |                                                             | - result can be placed inside any tag script to aggregate results    | tag themselves which I don't like. (maybe i can make special syntax and avoid      |
+|    |                                                             | whenever the parent tag is interpreted                               | making a new keyword, but then that increses the amount of syntax)                 |
+|    |                                                             | - The consumer has overall control of when and how the result is     | - doesn't address the issue of how the consumer gets the result, so one of the     |
+|    |                                                             | interpreted                                                          | other three options will also be needed                                            |
+|    |                                                             | - Works better for endless streams of tags since the result can      |                                                                                    |
+|    |                                                             | be conditionally interpreted using tag script                        |                                                                                    |
+|    |                                                             | - Compared to other os this is the most complex implementation       |                                                                                    |
+#+TBLFM: 
+
+
