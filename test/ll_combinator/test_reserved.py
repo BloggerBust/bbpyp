@@ -1,7 +1,7 @@
 import unittest
 from mock import patch
 
-from bbp.ll_combinator.reserved import Reserved
+from bbpyp.ll_combinator.reserved import Reserved
 
 
 @patch('test.TestContext', create=True)

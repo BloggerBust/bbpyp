@@ -1,7 +1,7 @@
 import unittest
 from mock import patch
 
-from bbp.ll_combinator.apply import Apply
+from bbpyp.ll_combinator.apply import Apply
 
 
 @patch('test.TestContext', create=True)
@@ -40,7 +40,7 @@ class TestApply(unittest.TestCase):
         test_context.function.assert_not_called()
         self.assertIsNone(result.value)
 
-    @patch('bbp.ll_combinator.model.result.Result', spec_set=True, autospec=True)
+    @patch('bbpyp.ll_combinator.model.result.Result', spec_set=True, autospec=True)
     def test_apply_call_with_matching_tokens_applies_function_to_result_value(self, mock_parse_result, test_context):
 
         expected_parse_result_value = mock_parse_result.value = 5

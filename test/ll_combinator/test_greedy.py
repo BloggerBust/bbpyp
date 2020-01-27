@@ -1,7 +1,7 @@
 import unittest
 from mock import patch, create_autospec
 
-from bbp.ll_combinator.greedy import Greedy
+from bbpyp.ll_combinator.greedy import Greedy
 
 
 @patch('test.TestContext', create=True)
@@ -23,7 +23,7 @@ class TestGreedy(unittest.TestCase):
 
         self.assertEqual(expected_representation, f"{parser}")
 
-    @patch("bbp.ll_combinator.model.result.Result", value=None, autospec=True)
+    @patch("bbpyp.ll_combinator.model.result.Result", value=None, autospec=True)
     def test_greedy_call_with_no_match_returns_none(self, mock_result, test_context):
 
         test_context.parser.return_value = mock_result
@@ -39,7 +39,7 @@ class TestGreedy(unittest.TestCase):
         self.assertEqual(mock_result, result)
         self.assertIsNone(result.value)
 
-    @patch("bbp.ll_combinator.model.result.Result", position=1, autospec=True)
+    @patch("bbpyp.ll_combinator.model.result.Result", position=1, autospec=True)
     def test_greedy_call_with_match_returns_none_if_tokens_remain(self, mock_result, test_context):
         test_context.parser.return_value = mock_result
 
@@ -53,7 +53,7 @@ class TestGreedy(unittest.TestCase):
         test_context.parser.assert_called_once_with(tokens, position)
         self.assertIsNone(result.value)
 
-    @patch("bbp.ll_combinator.model.result.Result", autospec=True)
+    @patch("bbpyp.ll_combinator.model.result.Result", autospec=True)
     def test_greedy_call_with_match_returns_expected_result_if_no_tokens_remain(self, mock_result, test_context):
 
         tokens = [("Int", "x"), ("SYNTAX", "+"), ("SYNTAX", "+")]

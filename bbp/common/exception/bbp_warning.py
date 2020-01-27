@@ -1,2 +1,0 @@
-class BbpWarning(Warning):
-    pass

@@ -1,6 +1,6 @@
 import unittest
 from mock import patch, create_autospec
-from bbp.common.model.link_node_iter import LinkNodeIter
+from bbpyp.common.model.link_node_iter import LinkNodeIter
 
 
 @patch("test.TestContext", create=True)

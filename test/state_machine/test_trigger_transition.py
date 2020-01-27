@@ -2,9 +2,9 @@ import unittest
 import re
 from mock import patch, DEFAULT
 
-from bbp.state_machine.model.trigger_transition import TriggerTransition
-from bbp.state_machine.exception.trigger_value_error import TriggerValueError
-from bbp.state_machine.exception.transition_value_error import TransitionValueError
+from bbpyp.state_machine.model.trigger_transition import TriggerTransition
+from bbpyp.state_machine.exception.trigger_value_error import TriggerValueError
+from bbpyp.state_machine.exception.transition_value_error import TransitionValueError
 
 
 @patch('test.test_context', trigger=("from_something", "given_something"), transition=(

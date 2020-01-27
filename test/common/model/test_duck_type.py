@@ -1,6 +1,6 @@
 import unittest
 from mock import patch
-from bbp.common.model.duck_type import DuckType
+from bbpyp.common.model.duck_type import DuckType
 
 
 class TestDuckType(unittest.TestCase):

@@ -2,8 +2,8 @@ import unittest
 import re
 from mock import patch
 
-from bbp.message_bus.model.message_pipe import MessagePipe
-from bbp.message_bus.exception.message_bus_value_error import MessageBusValueError
+from bbpyp.message_bus.model.message_pipe import MessagePipe
+from bbpyp.message_bus.exception.message_bus_value_error import MessageBusValueError
 
 
 @patch("test.TestContext", create=True)

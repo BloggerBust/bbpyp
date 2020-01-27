@@ -2,8 +2,8 @@ import unittest
 from mock import Mock, patch
 from os import linesep
 
-from bbp.abstract_parser.model.indent_delta import IndentDelta
-from bbp.common.service.source_format_service import SourceFormatService
+from bbpyp.abstract_parser.model.indent_delta import IndentDelta
+from bbpyp.common.service.source_format_service import SourceFormatService
 
 
 @patch('test.TestContext', create=True)

@@ -2,8 +2,8 @@ import unittest
 from mock import Mock, PropertyMock, patch, call
 
 from test.mock_helpers import set_property_mock
-from bbp.interpreter_state_machine.interpreter_state import InterpreterState
-from bbp.interpreter_state_machine.interpreter_state_machine import InterpreterStateMachine
+from bbpyp.interpreter_state_machine.interpreter_state import InterpreterState
+from bbpyp.interpreter_state_machine.interpreter_state_machine import InterpreterStateMachine
 
 
 @patch('test.TestContext', create=True)
@@ -92,7 +92,7 @@ class TestInterpreterStateMachine(unittest.TestCase):
 
         ]
 
-        with patch('bbp.state_machine.abstract_state_machine.AbstractStateMachine.current_state', new_callable=PropertyMock) as current_state_property_spy, patch('bbp.message_bus.model.message.Message', autospec=True) as stimuli:
+        with patch('bbpyp.state_machine.abstract_state_machine.AbstractStateMachine.current_state', new_callable=PropertyMock) as current_state_property_spy, patch('bbpyp.message_bus.model.message.Message', autospec=True) as stimuli:
             current_state_property_spy.__set__ = set_property_mock
 
             for case in cases:
@@ -128,7 +128,7 @@ class TestInterpreterStateMachine(unittest.TestCase):
             create_case(InterpreterState.REPORT_RESULT, self._mock_actions.report)
         ]
 
-        with patch('bbp.state_machine.abstract_state_machine.AbstractStateMachine.current_state', new_callable=PropertyMock) as current_state_property_spy, patch('bbp.message_bus.model.message.Message', autospec=True) as stimuli:
+        with patch('bbpyp.state_machine.abstract_state_machine.AbstractStateMachine.current_state', new_callable=PropertyMock) as current_state_property_spy, patch('bbpyp.message_bus.model.message.Message', autospec=True) as stimuli:
             current_state_property_spy.__set__ = set_property_mock
             stimuli.payload.__set__ = set_property_mock
 

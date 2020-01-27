@@ -1,7 +1,7 @@
 import unittest
 from mock import patch, create_autospec
 
-from bbp.ll_combinator.concat import Concat
+from bbpyp.ll_combinator.concat import Concat
 
 
 @patch('test.TestContext', create=True)
@@ -25,8 +25,8 @@ class TestConcat(unittest.TestCase):
 
         self.assertEqual(expected_representation, f"{parser}")
 
-    @patch('bbp.ll_combinator.concat.Result', autospec=True)
-    @patch('bbp.ll_combinator.concat.Result', value=None, autospec=True)
+    @patch('bbpyp.ll_combinator.concat.Result', autospec=True)
+    @patch('bbpyp.ll_combinator.concat.Result', value=None, autospec=True)
     def test_concat_call_with_lhs_not_matching_token_returns_result_constructed_with_value_None(self, lhs_result, rhs_result, test_context):
         test_context.lhs.return_value = lhs_result
         test_context.rhs.return_value = rhs_result
@@ -41,8 +41,8 @@ class TestConcat(unittest.TestCase):
         test_context.rhs.assert_not_called()
         result.called_once_with(None, start_position)
 
-    @patch('bbp.ll_combinator.concat.Result', value=None, autospec=True)
-    @patch('bbp.ll_combinator.concat.Result', position=2, autospec=True)
+    @patch('bbpyp.ll_combinator.concat.Result', value=None, autospec=True)
+    @patch('bbpyp.ll_combinator.concat.Result', position=2, autospec=True)
     def test_concat_call_with_lhs_matching_token_and_rhs_not_matching_token_returns_result_constructed_with_value_None(self, lhs_result, rhs_result, test_context):
         start_position = 0
         test_context.lhs.return_value = lhs_result
@@ -57,8 +57,8 @@ class TestConcat(unittest.TestCase):
         test_context.rhs.assert_called_once_with(tokens, test_context.lhs.return_value.position)
         result.called_once_with(None, start_position)
 
-    @patch('bbp.ll_combinator.concat.Result', position=2, value="rhs", autospec=True)
-    @patch('bbp.ll_combinator.concat.Result', position=1, value="lhs", autospec=True)
+    @patch('bbpyp.ll_combinator.concat.Result', position=2, value="rhs", autospec=True)
+    @patch('bbpyp.ll_combinator.concat.Result', position=1, value="lhs", autospec=True)
     def test_concat_call_with_lhs_matching_token_and_rhs_matching_token_returns_expected_result(self, lhs_result, rhs_result, test_context):
         tokens = [("KEYWORD", "while"), ("SYNTAX", "("), ("SYNTAX", ")")]
         start_position = 0

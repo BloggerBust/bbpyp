@@ -2,8 +2,8 @@ import unittest
 from mock import Mock, PropertyMock, patch, sentinel, DEFAULT, call
 
 from test.mock_helpers import set_property_mock
-from bbp.lexical_state_machine.lexical_state_machine import LexicalStateMachine
-from bbp.lexical_state_machine.model.lexical_state import LexicalState
+from bbpyp.lexical_state_machine.lexical_state_machine import LexicalStateMachine
+from bbpyp.lexical_state_machine.model.lexical_state import LexicalState
 
 
 @patch('test.TestContext', create=True)
@@ -70,7 +70,7 @@ class TestLexicalStateMachine(unittest.TestCase):
             ], LexicalState.DISPATCH_TOKENS)
         ]
 
-        with patch('bbp.state_machine.abstract_state_machine.AbstractStateMachine.current_state', new_callable=PropertyMock) as current_state_property_spy, patch('bbp.message_bus.model.message.Message', autospec=True) as stimuli:
+        with patch('bbpyp.state_machine.abstract_state_machine.AbstractStateMachine.current_state', new_callable=PropertyMock) as current_state_property_spy, patch('bbpyp.message_bus.model.message.Message', autospec=True) as stimuli:
 
             current_state_property_spy.__set__ = set_property_mock
 
@@ -100,7 +100,7 @@ class TestLexicalStateMachine(unittest.TestCase):
             create_case(LexicalState.DISPATCH_TOKENS, self._mock_lexical_actions.dispatch)
         ]
 
-        with patch('bbp.state_machine.abstract_state_machine.AbstractStateMachine.current_state', new_callable=PropertyMock) as current_state_property_spy, patch('bbp.message_bus.model.message.Message', autospec=True) as stimuli:
+        with patch('bbpyp.state_machine.abstract_state_machine.AbstractStateMachine.current_state', new_callable=PropertyMock) as current_state_property_spy, patch('bbpyp.message_bus.model.message.Message', autospec=True) as stimuli:
             current_state_property_spy.__set__ = set_property_mock
             stimuli.payload.__set__ = set_property_mock
 

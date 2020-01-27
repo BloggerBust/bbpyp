@@ -1,7 +1,7 @@
 import unittest
 from mock import patch
 
-from bbp.ll_combinator.tag import Tag
+from bbpyp.ll_combinator.tag import Tag
 
 
 @patch('test.TestContext', create=True)

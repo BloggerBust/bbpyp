@@ -1,7 +1,7 @@
 import unittest
 from mock import patch, create_autospec, sentinel, DEFAULT
 
-from bbp.state_machine.state_transition_builder import StateTransitionBuilder
+from bbpyp.state_machine.state_transition_builder import StateTransitionBuilder
 
 
 @patch('test.TestContext', create=True)
@@ -149,13 +149,13 @@ class TestTransitionBuilder(unittest.TestCase):
 
         self.assertEqual(builder._transition_state, expected)
 
-    @patch('bbp.state_machine.model.trigger_transition.TriggerTransition', autospec=True)
+    @patch('bbpyp.state_machine.model.trigger_transition.TriggerTransition', autospec=True)
     def test_state_transition_builder_append_returns_self(self, trigger_transition_factory, test_context):
         builder = StateTransitionBuilder(trigger_transition_factory)
 
         self.assertIsInstance(builder.append(), StateTransitionBuilder)
 
-    @patch('bbp.state_machine.model.trigger_transition.TriggerTransition', autospec=True)
+    @patch('bbpyp.state_machine.model.trigger_transition.TriggerTransition', autospec=True)
     def test_state_transition_builder_calling_append_after_setting_new_trigger_increments_transitions_key_length_by_one(self, trigger_transition_factory, test_context):
         expected_initial_transitions_key_length = 0
         builder = StateTransitionBuilder(trigger_transition_factory)
@@ -172,7 +172,7 @@ class TestTransitionBuilder(unittest.TestCase):
         self.assertEqual(len(builder._transitions.keys()) - initial_key_length,
                          expected_transitions_key_length_difference)
 
-    @patch('bbp.state_machine.model.trigger_transition.TriggerTransition', autospec=True)
+    @patch('bbpyp.state_machine.model.trigger_transition.TriggerTransition', autospec=True)
     def test_state_transition_builder_calling_append_with_same_trigger_overrides_existing_transition(self, trigger_transition_factory, test_context):
 
         trigger_transition_factory2 = create_autospec(
@@ -195,7 +195,7 @@ class TestTransitionBuilder(unittest.TestCase):
 
         self.assertNotEqual(first_transition, second_transition)
 
-    @patch('bbp.state_machine.model.trigger_transition.TriggerTransition', autospec=True)
+    @patch('bbpyp.state_machine.model.trigger_transition.TriggerTransition', autospec=True)
     def test_state_transition_builder_calling_append_passes_correct_arguments_to_trigger_transition_factory(self, trigger_transition_factory, test_context):
         builder = StateTransitionBuilder(trigger_transition_factory)
         builder._from_state = test_context.from_state
@@ -214,7 +214,7 @@ class TestTransitionBuilder(unittest.TestCase):
 
         trigger_transition_factory.assert_called_once_with(expected_trigger, expected_transition)
 
-    @patch('bbp.state_machine.model.trigger_transition.TriggerTransition', autospec=True)
+    @patch('bbpyp.state_machine.model.trigger_transition.TriggerTransition', autospec=True)
     def test_state_transition_builder_calling_append_with_trigger_parameter_none_does_not_pass_trigger_parameter_to_trigger_transition_factory(self, trigger_transition_factory, test_context):
         builder = StateTransitionBuilder(trigger_transition_factory)
         builder._from_state = test_context.from_state
@@ -232,7 +232,7 @@ class TestTransitionBuilder(unittest.TestCase):
 
         trigger_transition_factory.assert_called_once_with(expected_trigger, expected_transition)
 
-    @patch('bbp.state_machine.model.trigger_transition.TriggerTransition', autospec=True)
+    @patch('bbpyp.state_machine.model.trigger_transition.TriggerTransition', autospec=True)
     def test_state_transition_builder_calling_build_returns_transitions(self, trigger_transition_factory, test_context):
         builder = StateTransitionBuilder(trigger_transition_factory)
         builder.append = test_context.append

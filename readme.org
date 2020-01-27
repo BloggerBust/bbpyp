@@ -1,10 +1,11 @@
-#+TITLE: Blogger Bust Projects
+#+TITLE: Blogger Bust Python Projects
 #+AUTHOR: BloggerBust
 #+DESCRIPTION: A place for me to store python code that I might want to blog about
+#+STARTUP: showeverything
 
 * Projects
-** Tag Script
+** Lexicomb
 I will be adding some details here soon...
 
 * License
-Apache License v2.0
+[[file:LICENSE-2.0.txt][Apache License v2.0]]

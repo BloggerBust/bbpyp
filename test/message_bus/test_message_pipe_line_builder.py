@@ -1,10 +1,10 @@
 import unittest
 import re
 from mock import patch, call
-from bbp.message_bus.message_pipe_line_builder import MessagePipeLineBuilder
-from bbp.message_bus.exception.message_bus_value_error import MessageBusValueError
-from bbp.message_bus.abstract_publisher import AbstractPublisher
-from bbp.message_bus.abstract_subscriber import AbstractSubscriber
+from bbpyp.message_bus.message_pipe_line_builder import MessagePipeLineBuilder
+from bbpyp.message_bus.exception.message_bus_value_error import MessageBusValueError
+from bbpyp.message_bus.abstract_publisher import AbstractPublisher
+from bbpyp.message_bus.abstract_subscriber import AbstractSubscriber
 
 
 @patch("test.TestContext", create=True)
@@ -57,7 +57,7 @@ class TestMessagePipeLineBuilder(unittest.TestCase):
     def test_with_publisher_appends_to_publishers_list(self, test_context):
 
         builder = MessagePipeLineBuilder(test_context.linked_list, test_context.pipe_line_factory)
-        with patch("bbp.message_bus.abstract_publisher.AbstractPublisher", autospec=True) as publisher:
+        with patch("bbpyp.message_bus.abstract_publisher.AbstractPublisher", autospec=True) as publisher:
             builder.with_publisher(publisher)
             self.assertEqual(len(builder._publishers), 1)
             self.assertEqual(len(builder._subscribers), 0)
@@ -72,7 +72,7 @@ class TestMessagePipeLineBuilder(unittest.TestCase):
 
     def test_with_subscriber_appends_to_subscribers_list(self, test_context):
         builder = MessagePipeLineBuilder(test_context.linked_list, test_context.pipe_line_factory)
-        with patch("bbp.message_bus.abstract_subscriber.AbstractSubscriber", autospec=True) as subscriber:
+        with patch("bbpyp.message_bus.abstract_subscriber.AbstractSubscriber", autospec=True) as subscriber:
             builder.with_subscriber(subscriber)
             actual_subscriber, kwargs = builder._subscribers[0]
             self.assertEqual(len(builder._subscribers), 1)
@@ -144,8 +144,8 @@ class TestMessagePipeLineBuilder(unittest.TestCase):
         self.assertEqual(result, builder)
         self.assertFalse(len(builder._pipe_line))
 
-    @patch("bbp.message_bus.abstract_subscriber.AbstractSubscriber", autospec=True)
-    @patch("bbp.message_bus.abstract_publisher.AbstractPublisher", autospec=True)
+    @patch("bbpyp.message_bus.abstract_subscriber.AbstractSubscriber", autospec=True)
+    @patch("bbpyp.message_bus.abstract_publisher.AbstractPublisher", autospec=True)
     def test_append_pipe_raises_error_if_missing_or_invalid_fields(self, publisher, subscriber, test_context):
 
         cases = [

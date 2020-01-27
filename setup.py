@@ -7,7 +7,7 @@ def read(fname):
 
 
 setup(
-    name="bbp",
+    name="bbpyp",
     version="0.0.1",
     author="Trevor Wilson",
     author_email="trevor.wilson@bloggerbust.ca",
@@ -16,15 +16,15 @@ setup(
     keywords="BloggerBust projects: Message Bus, State machine, Lexical State Machine",
     url="https://bloggerbust.ca",
     # read('README.md'),
-    long_description="Blogger Bust Projects",
+    long_description="Blogger Bust Python Projects",
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Topic :: Software Development",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Apache Software License"
     ],
-    namespace_packages=["bbp"],
-    packages=find_namespace_packages(include=["bbp.*"]),
+    namespace_packages=["bbpyp"],
+    packages=find_namespace_packages(include=["bbpyp.*"]),
     python_requires=">=3.5",
     install_requires=[
         "dependency-injector==3.14.5",

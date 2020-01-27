@@ -1,8 +1,8 @@
 import unittest
 import re
 from mock import patch, create_autospec
-from bbp.common.model.single_link_node import SingleLinkNode
-from bbp.common.exception.bbp_value_error import BbpValueError
+from bbpyp.common.model.single_link_node import SingleLinkNode
+from bbpyp.common.exception.bbpyp_value_error import BbpypValueError
 
 
 @patch("test.TestContext", create=True)
@@ -22,7 +22,7 @@ class TestSingleLinkNode(unittest.TestCase):
             expected_value, expected_next_link = case
 
             if expected_next_link is test_context.bad_value:
-                with self.assertRaisesRegex(BbpValueError, re.escape(rf"{expected_next_link}: Must be either None or of type {SingleLinkNode}")):
+                with self.assertRaisesRegex(BbpypValueError, re.escape(rf"{expected_next_link}: Must be either None or of type {SingleLinkNode}")):
                     SingleLinkNode(expected_value, expected_next_link,
                                    link_node_iter_factory=test_context.link_node_iter_factory)
                 continue

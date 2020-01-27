@@ -1,0 +1,2 @@
+class BbpypWarning(Warning):
+    pass

@@ -1,7 +1,7 @@
 import unittest
 from mock import PropertyMock, patch, create_autospec
 
-from bbp.ll_combinator.match import Match
+from bbpyp.ll_combinator.match import Match
 
 
 @patch('test.TestContext', create=True)
@@ -24,7 +24,7 @@ class TestMatch(unittest.TestCase):
         self.assertEqual(expected_representation, f"{parser}")
 
     @patch(f"{Match.__module__}.{Match.__name__}.parser", new_callable=PropertyMock)
-    @patch('bbp.ll_combinator.model.result.Result', autospec=True)
+    @patch('bbpyp.ll_combinator.model.result.Result', autospec=True)
     def test_match_call_will_call_parser_and_update_parse_progress(self, mock_result, match_parser_property, test_context):
 
         tokens = [("KEYWMATCHD", "while"), ("SYNTAX", "("), ("SYNTAX", ")")]

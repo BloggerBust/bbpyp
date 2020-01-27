@@ -1,6 +1,6 @@
 import unittest
 from mock import patch, create_autospec
-from bbp.common.model.singly_linked_list import SinglyLinkedList
+from bbpyp.common.model.singly_linked_list import SinglyLinkedList
 
 
 @patch("test.TestContext", create=True)
@@ -18,12 +18,12 @@ class TestSinglyLinkedList(unittest.TestCase):
 
     def setUp(self):
         self._single_link_node_patcher = patch(
-            'bbp.common.model.single_link_node.SingleLinkNode', autospec=True)
+            'bbpyp.common.model.single_link_node.SingleLinkNode', autospec=True)
 
         self._single_link_node = self._single_link_node_patcher.start()
         self.addCleanup(self._single_link_node_patcher.stop)
 
-    @patch('bbp.common.model.single_link_node.SingleLinkNode', autospec=True)
+    @patch('bbpyp.common.model.single_link_node.SingleLinkNode', autospec=True)
     def test_members_initialized_as_expected(self, single_link_node, test_context):
         expected_header = single_link_node
         link_factory = test_context.factory

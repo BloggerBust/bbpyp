@@ -1,7 +1,7 @@
 import unittest
 from mock import patch, create_autospec, call
 
-from bbp.ll_combinator.repeat_match import RepeatMatch
+from bbpyp.ll_combinator.repeat_match import RepeatMatch
 
 
 @patch('test.TestContext', create=True)
@@ -25,7 +25,7 @@ class TestRepeatMatch(unittest.TestCase):
 
         self.assertEqual(expected_representation, f"{parser}")
 
-    @patch('bbp.ll_combinator.repeat_match.Result', autospec=True)
+    @patch('bbpyp.ll_combinator.repeat_match.Result', autospec=True)
     def test_repeat_match_call_with_no_matching_tokens_returns_result_with_empty_list_value_and_position_unchanged(self, mock_result, test_context):
 
         mock_match_factory_result = create_autospec(mock_result.__class__, spec_set=True)
@@ -52,7 +52,7 @@ class TestRepeatMatch(unittest.TestCase):
         self.assertIs(result.value, expected_result_value)
         self.assertIs(result.position, expected_result_position)
 
-    @patch('bbp.ll_combinator.repeat_match.Result', autospec=True)
+    @patch('bbpyp.ll_combinator.repeat_match.Result', autospec=True)
     def test_repeat_match_call_with_matching_tokens_returns_result_with_list_of_match_values_and_position_set_to_last_match_result_position(self, mock_result, test_context):
 
         tokens = [("KEYWORD", "int"), ("SYNTAX", "+"), ("SYNTAX", "+")]

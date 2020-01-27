@@ -1,7 +1,7 @@
 import unittest
 from mock import Mock, patch
 
-from bbp.common.service.metric_service import MetricService
+from bbpyp.common.service.metric_service import MetricService
 
 
 @patch('test.TestContext', create=True)

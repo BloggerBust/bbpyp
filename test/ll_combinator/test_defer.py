@@ -1,7 +1,7 @@
 import unittest
 from mock import patch
 
-from bbp.ll_combinator.defer import Defer
+from bbpyp.ll_combinator.defer import Defer
 
 
 @patch('test.TestContext', create=True)
