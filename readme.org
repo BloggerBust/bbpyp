@@ -3,9 +3,13 @@
 #+DESCRIPTION: A place for me to store python code that I might want to blog about
 #+STARTUP: showeverything
 
-* Projects
-** Lexicomb
+* Introduction
 I will be adding some details here soon...
 
+* Projects
+** Lexicomb
+* Modules
+* How to setup a developer environment
+* How to contribute
 * License
 [[file:LICENSE-2.0.txt][Apache License v2.0]]
