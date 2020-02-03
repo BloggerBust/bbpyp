@@ -4,6 +4,7 @@ __pycache__/
 # Distribution / packaging
 build/
 *.egg-info/
+.eggs/
 dist/
 
 # Artifacts

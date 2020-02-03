@@ -1,7 +1,7 @@
 import unittest
 from mock import Mock, PropertyMock, patch, call
 
-from test.mock_helpers import set_property_mock
+from bbpyp.test.mock_helpers import set_property_mock
 from bbpyp.interpreter_state_machine.interpreter_state import InterpreterState
 from bbpyp.interpreter_state_machine.interpreter_state_machine import InterpreterStateMachine
 

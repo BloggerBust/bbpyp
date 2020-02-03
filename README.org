@@ -1,0 +1,79 @@
+#+TITLE: Blogger Bust Python Projects
+#+AUTHOR: BloggerBust
+#+DESCRIPTION: A place for me to store python code that I might want to blog about
+#+STARTUP: showeverything
+
+* Introduction
+BbPyP (Blogger Bust Python Projects) is a collection of python packages that I intend to use to help develop other more interesting python projects.
+
+* Projects
+** [[https://github.com/BloggerBust/lexicomb][Lexicomb]]
+
+* How to contribute
+I am happy to accept pull requests. If you need to get a hold of me you can [[https://github.com/BloggerBust/bbpyp/issues][create an issue]] or [[https://bloggerbust.ca/about/][email me directly]].
+
+** How to setup a developer environment
+First, [[https://github.com/login?return_to=%2FBloggerBust%2Fbbpyp][fork this repository]] and clone your fork to a local dev environment.
+#+begin_src sh
+    git clone https://github.com/<your-username>/bbpyp.git
+#+end_src
+
+Next, create a venv and install the latest pip and setuptools.
+#+begin_src sh
+    cd bbpyp
+    python -m venv venv
+    source venv/bin/activate
+    python -m pip install --upgrade pip setuptools
+#+end_src
+
+Lastly, install the /dev/ extra requirements declared in [[file:setup.py][setup.py]] extras_require and run the unit tests.
+#+begin_src sh
+  python -m pip install -e .[dev]
+  python -m unittest discover
+#+end_src
+
+** Where to do your work
+Make your changes in a feature branch keeping your mainline up to date with upstream.
+#+begin_src sh
+  git checkout -b branch_name
+#+end_src
+
+** Don't forget unit tests
+Unit tests are written using python's [[https://docs.python.org/3/library/unittest.html][unittest framework]] and [[https://docs.python.org/3/library/unittest.mock.html][mock library]]. Please do write unit tests to accommodate your contribution.
+
+** Making commits
+Please read Chris Beams excellent [[https://chris.beams.io/posts/git-commit/][article on writing commit messages]] and do your best to follow his advice.
+
+** Making a pull request
+If you feel that your changes would be appreciated upstream then it is time to create a pull request. Please [[*Don't forget unit tests][write unit tests]] and run all the tests again before making a pull request to defend against inadvertently braking something.
+#+begin_src sh
+  python -m unittest discover
+#+end_src
+
+Then create a squash branch and [[https://blog.carbonfive.com/2017/08/28/always-squash-and-rebase-your-git-commits/][rebase with a single squashed commit]]. A squash branch is just a spin-off branch where you can perform the squash and rebase without the fear of corrupting your feature branch. My preference is to perform an interactive rebase. Note, that a squash branch is pointless if you only made a single commit.
+
+First switch to master and fast forward to HEAD. This will reduce the risk of having a merge conflict later.
+#+begin_src sh
+  git checkout master
+  git fetch origin --prune
+  git merge --ff-only origin/master
+#+end_src
+
+Next, switch back to your feature branch and pull any changes fetched to master. If there are conflicts, then resolve them. Be sure to run all the tests once more if you had to merge with changes from upstream.
+#+begin_src sh
+  git checkout branch_name
+  git pull origin/master
+  python -m unittest discover
+#+end_src
+
+Then, create your squash branch and begin the interactive rebase following [[https://blog.carbonfive.com/2017/08/28/always-squash-and-rebase-your-git-commits/][this guidance]].
+#+begin_src sh
+  git checkout -b branch_name_squash
+  git rebase -i branch_name_squash
+#+end_src
+
+Finally, push the squash branch to remote and [[https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request][create a pull request]].
+
+
+* License
+[[file:LICENSE-2.0.txt][Apache License v2.0]]

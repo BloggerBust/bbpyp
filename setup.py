@@ -11,12 +11,12 @@ setup(
     version="0.0.1",
     author="Trevor Wilson",
     author_email="trevor.wilson@bloggerbust.ca",
-    description=("BloggerBust Projects"),
+    description=("BloggerBust Python Projects common packages"),
     license="Apache License v2.0",
-    keywords="BloggerBust projects: Message Bus, State machine, Lexical State Machine",
-    url="https://bloggerbust.ca",
-    # read('README.md'),
-    long_description="Blogger Bust Python Projects",
+    keywords="BloggerBust, Blogger Bust, Blogger Bust Projects, state machine, combinator, lexical, interpreter, message bus",
+    url="https://github.com/BloggerBust/bbpyp",
+    long_description=read('README.md'),
+    long_description_content_type="text/markdown"
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Topic :: Software Development",
@@ -36,7 +36,5 @@ setup(
             "autopep8== 1.3.2"
         ]
     },
-    zip_safe=False,  # sorry, no eggs
-
-    test_suite='test'
+    zip_safe=False
 )

@@ -1,7 +1,7 @@
 import unittest
 from mock import Mock, PropertyMock, patch, sentinel, DEFAULT, call
 
-from test.mock_helpers import set_property_mock
+from bbpyp.test.mock_helpers import set_property_mock
 from bbpyp.lexical_state_machine.lexical_state_machine import LexicalStateMachine
 from bbpyp.lexical_state_machine.model.lexical_state import LexicalState
 
