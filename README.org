@@ -26,7 +26,7 @@ Next, create a venv and install the latest pip and setuptools.
     python -m pip install --upgrade pip setuptools
 #+end_src
 
-Lastly, install the /dev/ extra requirements declared in [[file:setup.py][setup.py]] extras_require and run the unit tests.
+Lastly, install the /dev/ extra requirements declared in [[file:setup.py][setup.py]] =extras_require= and run the unit tests.
 #+begin_src sh
   python -m pip install -e .[dev]
   python -m unittest discover
