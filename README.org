@@ -28,7 +28,6 @@ Next, create a venv and install the latest pip and setuptools.
 
 Lastly, install the /dev/ extra requirements declared in [[file:setup.py][setup.py]] =extras_require= and run the unit tests.
 #+begin_src sh :results output scalar :shebang "#/bin/bash" :dir ~/dev/bbpyp
-  source venv/bin/activate
   python setup.py develop
   python -m pip install -e .[dev]
   python -m unittest discover
@@ -45,14 +44,6 @@ Unit tests are written using python's [[https://docs.python.org/3/library/unitte
 
 ** Making commits
 Read Chris Beams excellent [[https://chris.beams.io/posts/git-commit/][article on writing commit messages]] and do your best to follow his advice.
-
-** Test a packaged installation
-To test packaging and installation you will need to install the /dist/ extra requirements declared in [[file:setup.py][setup.py]] =extras_require=
-
-#+begin_src sh
-  python setup.py sdist bdist_wheel
-  python -m twine check dist/*
-#+end_src
 
 ** Making a pull request
 If you feel that your changes would be appreciated upstream then it is time to create a pull request. Please [[*Don't forget unit tests][write unit tests]] and run all the tests again before making a pull request to defend against inadvertently braking something.

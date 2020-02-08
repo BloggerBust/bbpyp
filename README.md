@@ -1,45 +1,44 @@
 
 # Table of Contents
 
-1.  [Introduction](#orgbb07392)
-2.  [Projects](#org4061666)
-    1.  [Lexicomb](#org41bac77)
-3.  [How to contribute](#org4c9fbeb)
-    1.  [How to setup a developer environment](#org08111cd)
-    2.  [Where to do your work](#org80c01b6)
-    3.  [Don't forget unit tests](#org296fb67)
-    4.  [Making commits](#org44907d6)
-4.  [License](#orgc67d713)
-    5.  [Test a packaged installation](#orga2dc1de)
-    6.  [Making a pull request](#org5334aab)
+1.  [Introduction](#org0509745)
+2.  [Projects](#orge82aeda)
+    1.  [Lexicomb](#org83a5df3)
+3.  [How to contribute](#org756cc45)
+    1.  [How to setup a developer environment](#orgbde8292)
+    2.  [Where to do your work](#org92f082d)
+    3.  [Don't forget unit tests](#org9d3581b)
+    4.  [Making commits](#org3a0a428)
+    5.  [Making a pull request](#orgea3d357)
+4.  [License](#orge0cde36)
 
 
 
-<a id="orgbb07392"></a>
+<a id="org0509745"></a>
 
 # Introduction
 
 BbPyP (Blogger Bust Python Projects) is a collection of python packages that I intend to use to help develop other more interesting python projects.
 
 
-<a id="org4061666"></a>
+<a id="orge82aeda"></a>
 
 # Projects
 
 
-<a id="org41bac77"></a>
+<a id="org83a5df3"></a>
 
 ## [Lexicomb](https://github.com/BloggerBust/lexicomb)
 
 
-<a id="org4c9fbeb"></a>
+<a id="org756cc45"></a>
 
 # How to contribute
 
 I am happy to accept pull requests. If you need to get a hold of me you can [create an issue](https://github.com/BloggerBust/bbpyp/issues) or [email me directly](https://bloggerbust.ca/about/).
 
 
-<a id="org08111cd"></a>
+<a id="orgbde8292"></a>
 
 ## How to setup a developer environment
 
@@ -56,13 +55,12 @@ Next, create a venv and install the latest pip and setuptools.
 
 Lastly, install the *dev* extra requirements declared in [setup.py](setup.py) `extras_require` and run the unit tests.
 
-    source venv/bin/activate
     python setup.py develop
     python -m pip install -e .[dev]
     python -m unittest discover
 
 
-<a id="org80c01b6"></a>
+<a id="org92f082d"></a>
 
 ## Where to do your work
 
@@ -71,35 +69,25 @@ Make your changes in a feature branch keeping your mainline up to date with upst
     git checkout -b branch_name
 
 
-<a id="org296fb67"></a>
+<a id="org9d3581b"></a>
 
 ## Don't forget unit tests
 
 Unit tests are written using python's [unittest framework](https://docs.python.org/3/library/unittest.html) and [mock library](https://docs.python.org/3/library/unittest.mock.html). Please do write unit tests to accommodate your contribution.
 
 
-<a id="org44907d6"></a>
+<a id="org3a0a428"></a>
 
 ## Making commits
 
 Read Chris Beams excellent [article on writing commit messages](https://chris.beams.io/posts/git-commit/) and do your best to follow his advice.
 
 
-<a id="orga2dc1de"></a>
-
-## Test a packaged installation
-
-To test packaging and installation you will need to install the *dist* extra requirements declared in [setup.py](setup.py) `extras_require`
-
-    python setup.py sdist bdist_wheel
-    python -m twine check dist/*
-
-
-<a id="org5334aab"></a>
+<a id="orgea3d357"></a>
 
 ## Making a pull request
 
-If you feel that your changes would be appreciated upstream then it is time to create a pull request. Please [write unit tests](#org8e82216) and run all the tests again before making a pull request to defend against inadvertently braking something.
+If you feel that your changes would be appreciated upstream then it is time to create a pull request. Please [write unit tests](#org9d3581b) and run all the tests again before making a pull request to defend against inadvertently braking something.
 
     python -m unittest discover
 
@@ -125,7 +113,7 @@ Then, create your squash branch and begin the interactive rebase following [this
 Finally, push the squash branch to remote and [create a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
 
-<a id="orgc67d713"></a>
+<a id="orge0cde36"></a>
 
 # License
 
