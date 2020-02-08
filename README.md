@@ -9,8 +9,9 @@
     2.  [Where to do your work](#org80c01b6)
     3.  [Don't forget unit tests](#org296fb67)
     4.  [Making commits](#org44907d6)
-    5.  [Making a pull request](#org344437c)
 4.  [License](#orgc67d713)
+    5.  [Test a packaged installation](#orga2dc1de)
+    6.  [Making a pull request](#org5334aab)
 
 
 
@@ -55,6 +56,8 @@ Next, create a venv and install the latest pip and setuptools.
 
 Lastly, install the *dev* extra requirements declared in [setup.py](setup.py) `extras_require` and run the unit tests.
 
+    source venv/bin/activate
+    python setup.py develop
     python -m pip install -e .[dev]
     python -m unittest discover
 
@@ -79,14 +82,24 @@ Unit tests are written using python's [unittest framework](https://docs.python.o
 
 ## Making commits
 
-Please read Chris Beams excellent [article on writing commit messages](https://chris.beams.io/posts/git-commit/) and do your best to follow his advice.
+Read Chris Beams excellent [article on writing commit messages](https://chris.beams.io/posts/git-commit/) and do your best to follow his advice.
 
 
-<a id="org344437c"></a>
+<a id="orga2dc1de"></a>
+
+## Test a packaged installation
+
+To test packaging and installation you will need to install the *dist* extra requirements declared in [setup.py](setup.py) `extras_require`
+
+    python setup.py sdist bdist_wheel
+    python -m twine check dist/*
+
+
+<a id="org5334aab"></a>
 
 ## Making a pull request
 
-If you feel that your changes would be appreciated upstream then it is time to create a pull request. Please [write unit tests](#org296fb67) and run all the tests again before making a pull request to defend against inadvertently braking something.
+If you feel that your changes would be appreciated upstream then it is time to create a pull request. Please [write unit tests](#org8e82216) and run all the tests again before making a pull request to defend against inadvertently braking something.
 
     python -m unittest discover
 
