@@ -31,5 +31,5 @@ class IocUtil:
     @staticmethod
     def create_basic_log_adapter(providers, name, extra=None):
         log_message_factory_provider = providers.DelegatedFactory(Message)
-        return providers.Singleton(BasicLogAdapter, providers.Singleton(
-            logging.getLogger, name=name), log_message_factory=log_message_factory_provider, extra=extra)
+        logger = providers.Singleton(logging.getLogger, name=name)
+        return providers.Singleton(BasicLogAdapter, logger, log_message_factory=log_message_factory_provider, extra=extra)

@@ -12,13 +12,13 @@ class LexicalStateMachineIocContainer(containers.DeclarativeContainer):
 
         context_filter = common_ioc.context_filter_provider()
         logger.logger.addFilter(context_filter)
-
         LexicalStateMachineIocContainer.instance = LexicalStateMachineIocContainer(
             config=config, common_ioc=common_ioc, state_machine_ioc=state_machine_ioc)
 
         IocUtil.identify_singletons_to_be_skipped_during_deepcopy(
             LexicalStateMachineIocContainer.instance)
 
+        logger.info("container configuration complete")
         return LexicalStateMachineIocContainer.instance
 
     common_ioc = providers.DependenciesContainer()
@@ -26,10 +26,8 @@ class LexicalStateMachineIocContainer(containers.DeclarativeContainer):
 
     # Configuration
     config = providers.Configuration('config')
-    config_provider = providers.Object(config)
-    configure_logger = providers.Callable(logging.config.dictConfig, config.logger)
     logging_provider = IocUtil.create_basic_log_adapter(
-        providers, "lexical_state_machine", extra={"CONTEXT_ID": None})
+        providers, "bbpyp.lexical_state_machine", extra={"CONTEXT_ID": None})
 
     # Dependencies provided by third party packages
     lexical_actions_provider = providers.Dependency()
@@ -38,5 +36,5 @@ class LexicalStateMachineIocContainer(containers.DeclarativeContainer):
     lexical_state_machine_provider = providers.Singleton(
         LexicalStateMachine, logger=logging_provider, lexical_actions=lexical_actions_provider, state_transition_builder=state_machine_ioc.state_transition_builder_factory, context_service=common_ioc.context_service_provider)
 
-    build = providers.Callable(bootstrap_container, config=config_provider,
+    build = providers.Callable(bootstrap_container, config=config,
                                logger=logging_provider, common_ioc=common_ioc, state_machine_ioc=state_machine_ioc)

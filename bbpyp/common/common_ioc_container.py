@@ -1,4 +1,5 @@
 import logging
+import logging.config
 from pathlib import Path
 from io import open as synchronous_open_file
 from dependency_injector import containers, providers
@@ -28,22 +29,24 @@ from bbpyp.common.util.ioc_util import IocUtil
 
 class CommonIocContainer(containers.DeclarativeContainer):
 
-    def bootstrap_container(config, source_format_rules, configure_logger, logger):
+    def bootstrap_container(config, source_format_rules, logger):
+        if 'logger' in config:
+            logging.config.dictConfig(config['logger'])
+        logging.getLogger('bbpyp').addHandler(logging.NullHandler())
+
         CommonIocContainer.instance = CommonIocContainer(
             config=config, source_format_rules=source_format_rules)
-
         container = CommonIocContainer.instance
+
         IocUtil.identify_singletons_to_be_skipped_during_deepcopy(container)
-        logger.info("common container configuration complete")
-        return CommonIocContainer.instance
+        logger.info("container configuration complete")
+
+        return container
 
     # Configuration
     config = providers.Configuration('config')
     source_format_rules = providers.Configuration('source_format_rules')
-
-    config_provider = providers.Object(config)
-    configure_logger = providers.Callable(logging.config.dictConfig, config.logger)
-    logging_provider = IocUtil.create_basic_log_adapter(providers, "common")
+    logging_provider = IocUtil.create_basic_log_adapter(providers, "bbpyp.common")
 
     source_format_service_provider = providers.Singleton(
         SourceFormatService, format_rules=source_format_rules)
@@ -59,8 +62,7 @@ class CommonIocContainer(containers.DeclarativeContainer):
         AsyncService,
         logger=logging_provider,
         context_service=context_service_provider,
-        action_context_factory=action_context_factory_provider,
-        memory_channel_max_buffer_size=config.memory_channel_max_buffer_size)
+        action_context_factory=action_context_factory_provider)
 
     named_item_service_provider = providers.Factory(NamedItemService)
 
@@ -105,5 +107,5 @@ class CommonIocContainer(containers.DeclarativeContainer):
     singly_linked_list_factory = providers.Factory(
         SinglyLinkedList, single_link_node_factory=single_link_node_delegated_factory)
 
-    build = providers.Callable(bootstrap_container, config=config_provider, source_format_rules=source_format_rules,
-                               configure_logger=configure_logger, logger=logging_provider)
+    build = providers.Callable(bootstrap_container, config=config,
+                               source_format_rules=source_format_rules, logger=logging_provider)

@@ -1,1 +1,2 @@
+from bbpyp.__nspkg_meta__ import __version__
 from bbpyp.lexical_state_machine.lexical_state_machine_ioc_container import LexicalStateMachineIocContainer

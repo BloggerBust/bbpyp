@@ -11,13 +11,13 @@ class InterpreterStateMachineIocContainer(containers.DeclarativeContainer):
     def bootstrap_container(config, logger, common_ioc, state_machine_ioc):
         context_filter = common_ioc.context_filter_provider()
         logger.logger.addFilter(context_filter)
-
         InterpreterStateMachineIocContainer.instance = InterpreterStateMachineIocContainer(
             config=config, common_ioc=common_ioc, state_machine_ioc=state_machine_ioc)
 
         IocUtil.identify_singletons_to_be_skipped_during_deepcopy(
             InterpreterStateMachineIocContainer.instance)
 
+        logger.info("container configuration complete")
         return InterpreterStateMachineIocContainer.instance
 
     common_ioc = providers.DependenciesContainer()
@@ -25,10 +25,8 @@ class InterpreterStateMachineIocContainer(containers.DeclarativeContainer):
 
     # Configuration
     config = providers.Configuration('config')
-    config_provider = providers.Object(config)
-    configure_logger = providers.Callable(logging.config.dictConfig, config.logger)
     logging_provider = IocUtil.create_basic_log_adapter(
-        providers, "interpreter_state_machine", extra={"CONTEXT_ID": None})
+        providers, "bbpyp.interpreter_state_machine", extra={"CONTEXT_ID": None})
 
     # Dependencies provided by third party packages
     interpreter_actions_provider = providers.Dependency()
@@ -41,5 +39,5 @@ class InterpreterStateMachineIocContainer(containers.DeclarativeContainer):
         state_transition_builder=state_machine_ioc.state_transition_builder_factory,
         context_service=common_ioc.context_service_provider)
 
-    build = providers.Callable(bootstrap_container, config=config_provider,
+    build = providers.Callable(bootstrap_container, config=config,
                                logger=logging_provider, common_ioc=common_ioc, state_machine_ioc=state_machine_ioc)

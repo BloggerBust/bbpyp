@@ -12,7 +12,7 @@ from bbpyp.message_bus.model.message_pipe import MessagePipe
 from bbpyp.message_bus.message_pipe_line_builder import MessagePipeLineBuilder
 
 
-def bootstrap_container(config, common_ioc, configure_logger, logger):
+def bootstrap_container(config, common_ioc, logger):
     context_filter = common_ioc.context_filter_provider()
     logger.logger.addFilter(context_filter)
     MessageBusIocContainer.instance = MessageBusIocContainer(
@@ -21,26 +21,36 @@ def bootstrap_container(config, common_ioc, configure_logger, logger):
 
     if not container.config.memory_channel_topic_default():
         container.config.memory_channel_topic_default.update({
-            "publish_concurrency": 0,
-            "subscribe_concurrency": 0,
-            "subscribe_queue_type": QueueType.FIFO
+            "publish_concurrency": 1,
+            "subscribe_concurrency": 1,
+            "queue_type": QueueType.FIFO
         })
 
+    if not container.config.memory_channel_max_buffer_size():
+        container.config.memory_channel_max_buffer_size.update(
+            MessageBusIocContainer.MEMORY_CHANNEL_MAX_BUFFER_SIZE)
+
     IocUtil.identify_singletons_to_be_skipped_during_deepcopy(container)
+    logger.info("CONFIG SETTING: memory_channel_topic_default = {}",
+                container.config.memory_channel_topic_default())
+    logger.info("CONFIG SETTING: memory_channel_max_buffer_size = {}",
+                container.config.memory_channel_max_buffer_size())
+    logger.info("CONFIG SETTING: {} = {}", MessageBusIocContainer.MEMORY_CHANNEL_TOPIC_CONFIG_KEY,
+                container.config.memory_channel_topic())
     logger.info("container configuration complete")
     return MessageBusIocContainer.instance
 
 
 class MessageBusIocContainer(containers.DeclarativeContainer):
+    MEMORY_CHANNEL_TOPIC_CONFIG_KEY = "memory_channel_topic"
+    MEMORY_CHANNEL_MAX_BUFFER_SIZE = 5
 
     common_ioc = providers.DependenciesContainer()
 
     # Configuration
     config = providers.Configuration('config')
-    configure_logger = providers.Callable(logging.config.dictConfig, config.logger)
-    config_provider = providers.Object(config)
     logging_provider = IocUtil.create_basic_log_adapter(
-        providers, "message_bus", extra={"CONTEXT_ID": None})
+        providers, "bbpyp.message_bus", extra={"CONTEXT_ID": None})
 
     # Internal Providers
     message_bus_factory_provider = providers.Factory(
@@ -48,6 +58,9 @@ class MessageBusIocContainer(containers.DeclarativeContainer):
 
     memory_channel_topic_default_provider = providers.Factory(
         config.memory_channel_topic_default)
+
+    memory_channel_max_buffer_size_provider = providers.Factory(
+        config.memory_channel_max_buffer_size)
 
     # Delegates for consumer's of this package
     message_factory_provider = providers.DelegatedFactory(
@@ -58,6 +71,7 @@ class MessageBusIocContainer(containers.DeclarativeContainer):
         logger=logging_provider,
         channel_topic_config=config.memory_channel_topic,
         channel_topic_config_default=memory_channel_topic_default_provider,
+        channel_max_buffer_size=memory_channel_max_buffer_size_provider,
         async_service=common_ioc.async_service_provider,
         context_service=common_ioc.context_service_provider)
 
@@ -85,5 +99,5 @@ class MessageBusIocContainer(containers.DeclarativeContainer):
         async_service=common_ioc.async_service_provider,
         context_service=common_ioc.context_service_provider)
 
-    build = providers.Callable(bootstrap_container, config=config_provider,
-                               common_ioc=common_ioc, configure_logger=configure_logger, logger=logging_provider)
+    build = providers.Callable(bootstrap_container, config=config,
+                               common_ioc=common_ioc, logger=logging_provider)

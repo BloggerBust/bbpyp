@@ -1,2 +1,3 @@
+from bbpyp.__nspkg_meta__ import __version__
 from bbpyp.state_machine.state_machine_ioc_container import StateMachineIocContainer
 from bbpyp.state_machine.abstract_state_machine import AbstractStateMachine

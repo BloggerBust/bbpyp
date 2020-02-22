@@ -1,1 +1,2 @@
+from bbpyp.__nspkg_meta__ import __version__
 from bbpyp.interpreter_state_machine.interpreter_state_machine_ioc_container import InterpreterStateMachineIocContainer

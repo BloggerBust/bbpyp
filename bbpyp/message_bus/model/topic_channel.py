@@ -9,10 +9,12 @@ class TopicChannel:
     __LINKED_DISCONNECT_EVENT_KEY = "__LINKED_DISCONNECT_EVENT_KEY"
     __LINKED_TOPIC_KEY = "__LINKED_TOPIC_KEY"
 
-    def __init__(self, topic, logger, channel_topic_config, channel_topic_config_default, async_service, context_service):
+    def __init__(self, topic, logger, channel_topic_config, channel_topic_config_default, channel_max_buffer_size, async_service, context_service):
         self._started = False
         self._topic = topic
         self._logger = logger
+        self._channel_topic_config = deepcopy(channel_topic_config)
+        self._channel_topic_config_default = deepcopy(channel_topic_config_default)
         self._async_service = async_service
         self._context_service = context_service
         self._publisher_connection_source = None
@@ -22,24 +24,30 @@ class TopicChannel:
         self._publishers = []
         self._subscribers = []
 
-        _channel_topic_config = deepcopy(
-            channel_topic_config[topic]) if topic in channel_topic_config else {}
-
-        for key, val in channel_topic_config_default.items():
-            if key not in _channel_topic_config:
-                _channel_topic_config[key] = deepcopy(val)
+        _channel_topic_config = self._get_channel_topic_config(topic)
 
         self._number_of_publisher_clones = _channel_topic_config["publish_concurrency"] + 1
         self._number_of_subscriber_clones = _channel_topic_config["subscribe_concurrency"] + 1
-        self._subscribe_queue_type = _channel_topic_config["subscribe_queue_type"]
+        self._channel_max_buffer_size = channel_max_buffer_size
 
         self._publisher_connect_event = self._async_service.create_event()
         self._subscriber_connect_event = self._async_service.create_event()
         self._publisher_disconnect_event = self._async_service.create_event()
         self._subscriber_disconnect_event = self._async_service.create_event()
 
+    def _get_channel_topic_config(self, topic):
+        _channel_topic_config = self._channel_topic_config[topic] if topic in self._channel_topic_config else {
+        }
+
+        for key, val in self._channel_topic_config_default.items():
+            if key not in _channel_topic_config:
+                _channel_topic_config[key] = val
+
+        return _channel_topic_config
+
     def _create_connections(self):
-        publisher_connection, subscriber_connection = self._async_service.create_channel()
+        publisher_connection, subscriber_connection = self._async_service.create_channel(
+            self._channel_max_buffer_size)
         self._publisher_connection_source = publisher_connection
         self._subscriber_connection_source = subscriber_connection
         self._publisher_connection_clones = [self._publisher_connection_source.clone(
@@ -79,14 +87,16 @@ class TopicChannel:
                     type(self).__CONTEXT_ID_KEY, f"{context_id}P")
                 self._start_publisher(channel_context, publisher, cloned_connection, **kwargs)
 
+        _linked_channel_topic_config = self._get_channel_topic_config(
+            self.__linked_to_channel_topic)
         for subscriber, kwargs in self._subscribers:
             subscriber.connect_event = self._subscriber_connect_event
             subscriber.disconnect_event = self._subscriber_disconnect_event
             if self.__linked_from_channel_disconnect_event is not None:
                 self._logger.debug(
-                    "opening subscriber message queue link: {} --> {}", subscriber.topic, self.__linked_to_channel_topic)
+                    "opening subscriber message queue link: {} --> {} of type {}", subscriber.topic, self.__linked_to_channel_topic, _linked_channel_topic_config["queue_type"])
                 subscriber.open_message_queue(
-                    self.__linked_to_channel_topic, self.__linked_from_channel_disconnect_event, self._subscribe_queue_type)
+                    self.__linked_to_channel_topic, self.__linked_from_channel_disconnect_event, _linked_channel_topic_config["queue_type"])
 
             for cloned_connection in self._subscriber_connection_clones:
                 self._context_service.set_context_variable(

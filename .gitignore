@@ -6,6 +6,7 @@ build/
 *.egg-info/
 .eggs/
 dist/
+setup.py
 
 # Artifacts
 *.log

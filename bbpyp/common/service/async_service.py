@@ -6,11 +6,10 @@ from io import IOBase
 
 
 class AsyncService:
-    def __init__(self, logger, context_service, action_context_factory, memory_channel_max_buffer_size):
+    def __init__(self, logger, context_service, action_context_factory):
         self._logger = logger
         self._context_service = context_service
         self._action_context_factory = action_context_factory
-        self._memory_channel_max_buffer_size = memory_channel_max_buffer_size
 
     @classmethod
     def run(cls, *args, **kwargs):
@@ -85,6 +84,10 @@ class AsyncService:
         return trio.MultiError.catch(handle_exception if handler is None else handler)
 
     @classmethod
+    def cancel_scope(cls):
+        trio.cancel_scope.cancel()
+
+    @classmethod
     def create_cancellable_scope(cls, **kwargs):
         return trio.CancelScope(**kwargs)
 
@@ -92,8 +95,8 @@ class AsyncService:
     def create_channel_context(cls):
         return trio.open_nursery()
 
-    def create_channel(self):
-        return trio.open_memory_channel(self._memory_channel_max_buffer_size)
+    def create_channel(self, memory_channel_max_buffer_size=0):
+        return trio.open_memory_channel(memory_channel_max_buffer_size)
 
     @classmethod
     def create_event(cls):
