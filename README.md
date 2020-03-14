@@ -1,50 +1,50 @@
 
 # Table of Contents
 
-1.  [Introduction](#orgf6af6c8)
-2.  [Projects that use the BbPyP package](#org93b6086)
-    1.  [Lexicomb](#orgdbabb60)
-3.  [Configuration](#org4082526)
-    1.  [Logging](#org67537e2)
-    2.  [Message Bus](#orgadcd1c2)
-4.  [How to contribute](#org2083291)
-    1.  [How to setup a developer environment](#orge28ae61)
-    2.  [Where to do your work](#org9c758d9)
-    3.  [Don't forget unit tests](#org19bf540)
-    4.  [Making commits](#orgd4ba094)
-    5.  [Making a pull request](#orga20d302)
-5.  [Packaging](#org964a6c8)
-6.  [License](#org45ffc14)
+1.  [Introduction](#org3ca8cfb)
+2.  [Projects that use the BbPyP package](#orgee8ef5b)
+    1.  [Lexicomb](#org01ea965)
+3.  [Configuration](#orgcdab8e9)
+    1.  [Logging](#org5825b58)
+    2.  [Message Bus](#orga3da92f)
+4.  [How to contribute](#orgca220f1)
+    1.  [How to setup a developer environment](#orgd08eb69)
+    2.  [Where to do your work](#org4b8cb70)
+    3.  [Don't forget unit tests](#orgf9ce6f2)
+    4.  [Making commits](#org48a162d)
+    5.  [Making a pull request](#orgaf302d7)
+5.  [Packaging](#org9b1477e)
+6.  [License](#orgca5bb48)
 
 
 
-<a id="orgf6af6c8"></a>
+<a id="org3ca8cfb"></a>
 
 # Introduction
 
 BbPyP (Blogger Bust Python Project) is a collection of python packages that I intend to use to help develop other more interesting python projects.
 
 
-<a id="org93b6086"></a>
+<a id="orgee8ef5b"></a>
 
 # Projects that use the BbPyP package
 
 
-<a id="orgdbabb60"></a>
+<a id="org01ea965"></a>
 
 ## [Lexicomb](https://github.com/BloggerBust/lexicomb)
 
 Lexicomb is a keyword-driven interpreted programming language. The word *Lexicomb* is the contraction of the word *lexical*, meaning content word, and *combinator*, meaning that which combines. The Lexicomb interpreter is composed of a lexical analyzer and a parser combinator.
 
 
-<a id="org4082526"></a>
+<a id="orgcdab8e9"></a>
 
 # Configuration
 
 Each bbpyp namespace has a [Dependency Injector IoC container](http://python-dependency-injector.ets-labs.org/containers/index.html) that accepts a python dictionary named *config*.
 
 
-<a id="org67537e2"></a>
+<a id="org5825b58"></a>
 
 ## Logging
 
@@ -64,7 +64,7 @@ There are four named loggers that can be configured:
 4.  `bbpyp.interpreter_state_machine`
 
 
-<a id="orgadcd1c2"></a>
+<a id="orga3da92f"></a>
 
 ## Message Bus
 
@@ -108,14 +108,14 @@ Provides default settings for any topic that is not configured in `memory_channe
 The number of objects that can be temporarily stored in a memory channel prior to being processed. The default is 5.
 
 
-<a id="org2083291"></a>
+<a id="orgca220f1"></a>
 
 # How to contribute
 
 I am happy to accept pull requests. If you need to get a hold of me you can [create an issue](https://github.com/BloggerBust/bbpyp/issues) or [email me directly](https://bloggerbust.ca/about/).
 
 
-<a id="orge28ae61"></a>
+<a id="orgd08eb69"></a>
 
 ## How to setup a developer environment
 
@@ -142,7 +142,7 @@ Lastly, install the *dev* requirements declared in [dev-requirements.txt](dev-re
     OK
 
 
-<a id="org9c758d9"></a>
+<a id="org4b8cb70"></a>
 
 ## Where to do your work
 
@@ -157,25 +157,25 @@ Make your changes in a feature branch.
     git checkout -b branch_name
 
 
-<a id="org19bf540"></a>
+<a id="orgf9ce6f2"></a>
 
 ## Don't forget unit tests
 
 Unit tests are written using python's [unittest framework](https://docs.python.org/3/library/unittest.html) and [mock library](https://docs.python.org/3/library/unittest.mock.html). Please do write unit tests to accommodate your contribution.
 
 
-<a id="orgd4ba094"></a>
+<a id="org48a162d"></a>
 
 ## Making commits
 
 Read Chris Beams excellent [article on writing commit messages](https://chris.beams.io/posts/git-commit/) and do your best to follow his advice.
 
 
-<a id="orga20d302"></a>
+<a id="orgaf302d7"></a>
 
 ## Making a pull request
 
-If you feel that your changes would be appreciated upstream then it is time to create a pull request. Please [write unit tests](#org19bf540) and run all the tests again before making a pull request to defend against inadvertently braking something.
+If you feel that your changes would be appreciated upstream, then it is time to create a pull request. Please [write unit tests](#orgf9ce6f2) and run all the tests again before making a pull request to defend against inadvertently braking something.
 
     python -m unittest discover
 
@@ -193,15 +193,21 @@ Next, switch back to your feature branch and pull any changes fetched to master.
     git pull origin/master
     python -m unittest discover
 
-Then, create your squash branch and begin the interactive rebase following [this guidance](https://blog.carbonfive.com/2017/08/28/always-squash-and-rebase-your-git-commits/).
+Determine the first commit of the feature branch which will be needed during interactive rebasing.
+
+    git log master..branch_name | grep -iE '^commit' | tail -n 1
+
+    commit f723dcc2c154662b3d6c366fb5ad923865687796
+
+Then, create a squash branch as a spin-off of the feature branch and begin the interactive rebase following [this guidance](https://blog.carbonfive.com/2017/08/28/always-squash-and-rebase-your-git-commits/).
 
     git checkout -b branch_name_squash
-    git rebase -i branch_name_squash
+    git rebase -i f723dcc^
 
-Finally, push the squash branch to remote and [create a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
+Now, if you make a mistake during the rebase, but don't notice until after you have already committed, all of your precious commit history remains in the feature branch. Simply reset the squash branch back to the feature branch and start again. Once you are happy with your rebase, push the squash branch to remote and [create a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
 
-<a id="org964a6c8"></a>
+<a id="org9b1477e"></a>
 
 # Packaging
 
@@ -218,7 +224,7 @@ By default the wheel and sdist are placed in a directory named dist.
     bbpyp-0.0.2.tar.gz
 
 
-<a id="org45ffc14"></a>
+<a id="orgca5bb48"></a>
 
 # License
 

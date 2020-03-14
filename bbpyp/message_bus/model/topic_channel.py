@@ -1,7 +1,8 @@
+from copy import deepcopy
+
 from bbpyp.message_bus.abstract_publisher import AbstractPublisher
 from bbpyp.message_bus.abstract_subscriber import AbstractSubscriber
-
-from copy import deepcopy
+from bbpyp.common.exception.bbpyp_value_error import BbpypValueError
 
 
 class TopicChannel:
@@ -10,10 +11,19 @@ class TopicChannel:
     __LINKED_TOPIC_KEY = "__LINKED_TOPIC_KEY"
 
     def __init__(self, topic, logger, channel_topic_config, channel_topic_config_default, channel_max_buffer_size, async_service, context_service):
+
+        if not isinstance(channel_topic_config, dict) and channel_topic_config is not None:
+            raise BbpypValueError("channel_topic_config", channel_topic_config,
+                                  "channel_topic_config must be of type dict or None")
+
+        if not isinstance(channel_topic_config_default, dict):
+            raise BbpypValueError("channel_topic_config_default", channel_topic_config_default,
+                                  "channel_topic_config_default must be of type dict")
+
         self._started = False
         self._topic = topic
         self._logger = logger
-        self._channel_topic_config = deepcopy(channel_topic_config)
+        self._channel_topic_config = deepcopy(channel_topic_config) if channel_topic_config else {}
         self._channel_topic_config_default = deepcopy(channel_topic_config_default)
         self._async_service = async_service
         self._context_service = context_service

@@ -127,7 +127,7 @@ Unit tests are written using python's [[https://docs.python.org/3/library/unitte
 Read Chris Beams excellent [[https://chris.beams.io/posts/git-commit/][article on writing commit messages]] and do your best to follow his advice.
 
 ** Making a pull request
-If you feel that your changes would be appreciated upstream then it is time to create a pull request. Please [[*Don't forget unit tests][write unit tests]] and run all the tests again before making a pull request to defend against inadvertently braking something.
+If you feel that your changes would be appreciated upstream, then it is time to create a pull request. Please [[*Don't forget unit tests][write unit tests]] and run all the tests again before making a pull request to defend against inadvertently braking something.
 #+begin_src sh
   python -m unittest discover
 #+end_src
@@ -148,13 +148,24 @@ Next, switch back to your feature branch and pull any changes fetched to master.
   python -m unittest discover
 #+end_src
 
-Then, create your squash branch and begin the interactive rebase following [[https://blog.carbonfive.com/2017/08/28/always-squash-and-rebase-your-git-commits/][this guidance]].
-#+begin_src sh
-  git checkout -b branch_name_squash
-  git rebase -i branch_name_squash
+Determine the first commit of the feature branch which will be needed during interactive rebasing.
+#+begin_src sh :results output scalar :shebang "#!/bin/bash" :dir ~/dev/test_rebase :wrap example
+  git log master..branch_name | grep -iE '^commit' | tail -n 1
 #+end_src
 
-Finally, push the squash branch to remote and [[https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request][create a pull request]].
+#+RESULTS: 
+
+#+begin_example
+commit f723dcc2c154662b3d6c366fb5ad923865687796
+#+end_example
+
+Then, create a squash branch as a spin-off of the feature branch and begin the interactive rebase following [[https://blog.carbonfive.com/2017/08/28/always-squash-and-rebase-your-git-commits/][this guidance]].
+#+begin_src sh
+  git checkout -b branch_name_squash
+  git rebase -i f723dcc^
+#+end_src
+
+Now, if you make a mistake during the rebase, but don't notice until after you have already committed, all of your precious commit history remains in the feature branch. Simply reset the squash branch back to the feature branch and start again. Once you are happy with your rebase, push the squash branch to remote and [[https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request][create a pull request]].
 
 * Packaging
 For convenience distribution requirements, including pep517 package, are defined in [[file:dist-requirements.txt][dist-requirements.txt]].
